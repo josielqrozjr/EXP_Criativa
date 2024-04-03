@@ -1,0 +1,5 @@
+{
+    "python.analysis.extraPaths": [
+        "./RA2_Flask/1_task"
+    ]
+}

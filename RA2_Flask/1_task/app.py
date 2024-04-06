@@ -1,3 +1,7 @@
+#-----------------
+# Criar o método HTML para retornar a página com a lista de atuadores, como observado no exemplo com sensores. A tela deverá ser acessada via /actuators e deve conter características da tela abaixo.
+#-----------------
+
 # app.py
 from flask import Flask
 

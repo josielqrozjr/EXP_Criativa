@@ -20,7 +20,7 @@ def index():
             <br>
             <h1>Página incial</h1>
             <hr>
-            <p><a href="/">Clique aqui para voltar a sua casa!</a></p>
+            <p><a href="/sensors">Clique aqui para voltar a sua casa!</a></p>
         </body>
     </html>
 """

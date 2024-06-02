@@ -15,7 +15,6 @@ class Read(db.Model):
         sensor = Sensor.query.filter(Sensor.topic == topic).first()
         device = Device.query.filter(Device.id == sensor.devices_id).first()
         if (sensor is not None) and (device.is_active==True):
-            read = Read( read_datetime = datetime.now(), sensors_id = sensor.id, value = float(value) )
+            read = Read( read_datetime = datetime.now(), sensors_id = sensor.id, value = float(value))
             db.session.add(read)
             db.session.commit()
-

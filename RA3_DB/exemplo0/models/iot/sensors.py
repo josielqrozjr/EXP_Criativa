@@ -4,7 +4,7 @@ from models.iot.devices import Device
 class Sensor(db.Model):
     __tablename__ = 'sensors'
     id= db.Column('id', db.Integer, primary_key=True)
-    devices_id = db.Column( db.Integer, db.ForeignKey(Device.id))
+    devices_id = db.Column(db.Integer, db.ForeignKey(Device.id))
     unit = db.Column(db.String(50))
     topic = db.Column(db.String(50))
 
@@ -48,6 +48,7 @@ class Sensor(db.Model):
             sensor.unit = unit
             device.is_active = is_active
             db.session.commit()
+            
             return Sensor.get_sensors()
 
 

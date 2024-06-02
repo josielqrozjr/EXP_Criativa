@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request
 from models.db import db, instance
 from controllers.sensors_controller import sensor_
+from controllers.actuators_controller import actuator_
 from controllers.reads_controller import read, Read
+from controllers.write_controller import write, Write
 from flask_mqtt import Mqtt
 import json
 
@@ -18,7 +20,10 @@ def create_app():
     db.init_app(app)
 
     app.register_blueprint(sensor_, url_prefix='/')
+    app.register_blueprint(actuator_, url_prefix='/')
     app.register_blueprint(read, url_prefix='/')
+    app.register_blueprint(write, url_prefix='/')
+
     
     @app.route('/')
     def index():
@@ -32,7 +37,8 @@ def create_app():
     app.config['MQTT_TLS_ENABLED'] = False # If your broker supports TLS, set it True
     mqtt_client= Mqtt()
     mqtt_client.init_app(app)
-    topic_subscribe = "/aula_flask/"
+    topic_subscribe = "/sensor"
+    myTopicAction = "/actuator"
 
 
     @mqtt_client.on_connect()
@@ -40,20 +46,36 @@ def create_app():
         if rc == 0:
             print('Broker Connected successfully')
             mqtt_client.subscribe(topic_subscribe) # subscribe topic
+            mqtt_client.subscribe(myTopicAction) # subscribe topic
         else:
             print('Bad connection. Code:', rc)
 
+    @mqtt_client.on_disconnect()
+    def handle_disconnect(client, userdata, rc):
+        print("Disconnected from broker")
 
     @mqtt_client.on_message()
     def handle_mqtt_message(client, userdata, message):
         if(message.topic==topic_subscribe):
-            js = json.loads(message.payload.decode())
-            print(js)
+            temperature = message.payload.decode()
             try:
                 with app.app_context():
-                    Read.save_read(js["sensor"],js["valor"])
+                    Read.save_read(topic_subscribe,temperature)
             except:
                 pass
 
+        if(message.topic==myTopicAction):
+            alerta_value = message.payload.decode()
+            if alerta_value == '0':
+                alerta_value = "Desligado"
+
+            elif alerta_value == "1":
+                alerta_value = "Ligado"
+
+            try:
+                with app.app_context():
+                    Write.save_write(myTopicAction, alerta_value)
+            except:
+                pass
 
     return app

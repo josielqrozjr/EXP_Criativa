@@ -3,8 +3,8 @@ from models.iot.sensors import Sensor
 
 sensor_ = Blueprint("sensor_",__name__, template_folder="views")
 
-@sensor_.route('/register_sensor')
 
+@sensor_.route('/register_sensor')
 def register_sensor():
     return render_template("register_sensor.html")
 
